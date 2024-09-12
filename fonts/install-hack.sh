@@ -1,0 +1,1 @@
+brew install homebrew/cask-fonts/font-hack

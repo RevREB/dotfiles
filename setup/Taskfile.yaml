@@ -1,0 +1,61 @@
+---
+version: "3"
+
+vars:
+  PROJECT_DIR:
+    sh: "git rev-parse --show-toplevel"
+
+tasks:
+  tools-init:
+    desc: "Initialize workstation dependencies with Brew"
+    preconditions:
+      - sh: command -v brew
+        msg: |
+          "Homebrew is not installed. Using MacOS, Linux or WSL? 
+          Head over to https://brew.sh to get up and running."
+    cmds:
+      - brew install {{.DEPS}} {{.CLI_ARGS}}
+    vars:
+      DEPS: >-
+        age
+        ansible
+        awscli
+        aws-vault
+        direnv
+        fluxcd/tap/flux
+        helm
+        gitleaks
+        go-task/tap/go-task
+        ipcalc
+        jq
+        kubernetes-cli
+        kustomize
+        pre-commit
+        prettier
+        sops
+        stern
+        terraform
+        yamllint
+        yq
+        diff-so-fancy
+        thefuck
+        fzf
+        ripgrep
+        glow
+        fpp
+        wget
+        gh
+        procs
+        duf
+        broot
+        dog
+
+  verify:
+    desc: "Verify env settings"
+    cmds:
+      - ./configure --verify
+
+  configure:
+    desc: "Configure repository from env settings"
+    cmds:
+      - ./configure

@@ -1,0 +1,103 @@
+[user]
+    #Change this Username and email
+    name = <NAME>
+    email = <email>
+[filter "lfs"]
+    process = git-lfs filter-process
+    required = true
+    clean = git-lfs clean -- %f
+    smudge = git-lfs smudge -- %f
+[alias]
+  st = status -sb
+  lg = log --graph --date=relative --pretty=tformat:'%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%an %ad)%Creset' -20
+  branches = for-each-ref --sort=-committerdate --format=\"%(color:blue)%(authordate:relative) %(color:red)%(authorname) %(color:white)%(color:bold)%(refname:short)\"
+  branches-remote = for-each-ref --sort=-committerdate --format=\"%(color:blue)%(authordate:relative) %(color:red)%(authorname) %(color:white)%(color:bold)%(refname:short)\" refs/remotes
+  dsf = diff --color
+  staged = diff --name-only --cached
+  unstage = reset HEAD
+  uncommit = reset --soft HEAD^
+  camend = commit --amend -m
+  amend-message = commit --amend -m
+  amend-files = commit --amend --no-edit
+  ci = "!f() { git commit --allow-empty -m \"$1\"; return 1;}; f"
+  discard = stash push
+  undiscard = stash pop
+  remote-add = remote add origin
+  upstream-add = remote add upstream
+  upstream-merge = !git fetch upstream && git merge upstream/main
+  credentials-cache = config --global credential.helper cache -timeout=3600 
+  credentials-store = config --global credential.helper store
+  default = "!f() { git switch $(awk -F "/" '{print $NF}' .git/refs/remotes/origin/HEAD) && git pull; }; f"
+  co = "!f() { (__GIT_CO_DIR=$(pwd); cd ~/.dotfiles/scripts; ./git-checkout-search.sh ${__GIT_CO_DIR} \"$@\"); }; f"
+  checkout-search = co
+  main = checkout main
+  master = checkout master
+  bn = "!f() { git default && git switch -c \"$@\"; }; f"
+  branch-new = nb
+  bnc = git switch -c
+  branch-new-current = bnc
+  bd = branch -D
+  branch-del = bd
+  a = add
+  aa = add --all
+  ap = -c 'interactive.diffFilter=less' add --patch
+  c = commit -m
+  ac = commit -am
+  cp = "!f() { git commit -m \"$@\" && git push; }; f"
+  acp = "!f() { git commit -am \"$@\" && git push; }; f"
+  p = "!f() { git push origin && git branch --set-upstream-to=origin/$(git symbolic-ref --short HEAD); }; f"
+  pl = "!f() { git branch --set-upstream-to=origin/$(git symbolic-ref --short HEAD) && git pull origin; }; f"
+  push-force = push --force-with-lease
+  pull-force = !git discard && git pull
+  pull-combine = !git pull-force && git undiscard
+  untrack = rm -r --cached
+  d = diff -w
+  dc = diff --cached
+  r = remote -v
+  remotes = r
+  repo = r
+  browse = !gh browse
+  fresh = reset --hard
+  fresh-clean = !git reset --hard && git clean -fd
+  init-remote = "!f() { git init && git add . && git commit --allow-empty -m \"Initial commit\" && git branch -M main && git remote add origin \"$@\" && git push -u origin main; }; f"
+  rb = rebase --interactive
+  rebase-all = rebase --interactive --root
+  pick = "!f() { git show \"$@\" | git apply; }; f"
+  # complex functions defined in ~/.oh-my-zsh/custom/aliases.zsh
+[init]
+  defaultBranch = main
+[core]
+  editor = code --wait
+  # pager = diff-so-fancy | less --tabs=4 -RFX
+[push]
+  default = current
+[pull]
+	rebase = true
+[rebase]
+	autostash = true
+[add "interactive"]
+	useBuiltin = false
+[credential]
+  helper = store # ! stores as plaintext - better to use SSH instead: https://docs.github.com/en/authentication/connecting-to-github-with-ssh
+# ! the below requires diff-so-fancy plugin: brew install diff-so-fancy
+# ! use git version > 2.26.2
+# [interactive]
+#   diffFilter = diff-so-fancy --patch
+# [color]
+#   ui = true
+# [color "diff-highlight"]
+#   oldNormal = red bold
+#   oldHighlight = red bold 52
+#   newNormal = green bold
+#   newHighlight = green bold 22
+# [color "diff"]
+#   meta = 11
+#   frag = magenta bold
+#   func = 146 bold
+#   commit = yellow bold
+#   old = red bold
+#   new = green bold
+#   whitespace = red reverse
+# ! diff-so-fancy isn't compatible with interactive patch, which is enabled by default in git version > 2.37
+# [add "interactive"]
+# 	useBuiltin = false
